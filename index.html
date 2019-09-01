@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>邀请有礼</title>
+  <script src="./jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  <script type="text/javascript" src="md5.js"></script>
+</head>
+<body>
+  <div class="invitedGift">
+    <div class="title">
+      <!-- <div class="navigation">
+        <div></div>
+        <span>9:41 AM</span>
+        <div></div>
+      </div> -->
+      <!-- <div class="login">
+        <span class="fl">&lt;</span>
+        <span>注册有礼</span>
+      </div> -->
+    </div>
+    <div class="nav">
+      <img style="width:100%; height:100%;" src="./img/banner.png" alt="">
+    </div>
+    <div class="content">
+      <span id="inviter" class="invite"></span>
+      <p class="offer">无门槛优惠券等你来拿~</p>
+      <form class="formClass" action="">
+        <div style="position: relative; height: 45px">
+          <img src="./img/Combined Shape.png" alt="">
+          <input class="form_input" id="phone" type="text" placeholder="请输入手机号">
+          <div id="message_phone" class="message_phone">
+            <span id="text">请输入正确的手机号码！</span>
+          </div>
+        </div>
+        <br>
+        <div style="position: relative; height: 45px">
+          <img style="height: 16px;width:13px" src="./img/shield.png" alt="">
+          <input class="form_input" id="writeVerification" type="text" placeholder="请输入验证码">
+          <span class="formClass_span" id="verification" onclick="getVerification(this)">获取验证码</span>
+          <div id="message_verification" class="message_verification">
+            <span id="text">请输入正确的验证码！</span>
+          </div>
+        </div>
+        <br>
+        <div style="position: relative; height: 45px">
+          <img style="height: 16px;width:13px" src="./img/lock.png" alt="">
+          <input class="form_input" id="password" type="password" placeholder="请输入密码" >
+          <img style="margin: 15px 0 0 -35px;height: 10px;width:14px" src="./img/eyes.png" alt="" onclick="showKey()">
+          <div id="message_password" class="message_password">
+            <span id="text_password">请输入密码</span>
+          </div>
+        </div>
+        <br>
+        <div style="position: relative; height: 45px">
+          <img style="height: 15px;width:15px" src="./img/Shape.png" alt="">
+          <input class="form_input" id="invite" type="text" placeholder=""  value="">
+          <div id="message_invite" class="message_invite">
+            <span id="text">请输入邀请码！</span>
+          </div>
+        </div>
+        <br>
+        <button class="btn" type="button" onclick="handleSubmit()">注册</button>
+      </form>
+      <div class="activity">
+        <span class="bar"></span>
+        <span class="activity_active">活动细则</span>
+        <span class="bar"></span>
+        <div class="activity_text">
+          <p></p>
+        </div>
+      </div>
+      <div class="activity_bottom"></div>
+    </div> 
+    <div class="bottom">
+      <div class="bottom_content">
+        <div class="bottom_content_img">
+          <img class="bottom_content_img" src="./img/icon.png" alt="">
+        </div>
+        <div class="bottom_content_text">
+          <p class="text_top">邦零管家APP</p>
+          <p class="text_bottom">为您量身定制好服务</p>
+        </div>
+        <div class="bottom_content_down" onclick="goDown()">立即下载</div>
+      </div>
+    </div>
+    <!-- <div class="cover"> -->
+    </div>
+  </div>
+</body>
+</html>
+<script>
+  var time = 60
+  function GetQueryString (name) {
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if(r!=null)return  unescape(r[2]); return null;
+  }
+  var phone = GetQueryString("phone")
+  document.getElementById("inviter").innerHTML = "邀请人: " +phone
+  var code = GetQueryString("code")
+  // document.getElementById("invite").innerHTML = code
+  document.getElementById("invite").value = code
+  // 手机号验证
+  function checkUser(){
+    var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
+    var phone = $("#phone").val();
+    if(myreg.test(phone)){
+      return true
+    } else {
+      document.getElementById("message_phone").style.display = "block"
+      document.getElementById("message_phone").style.color = "rgb(255, 0, 0)"
+      // document.getElementById("text").innerHTML = "请输入正确的手机号码！"
+      return false
+    } 
+  }
+  // 验证码验证
+  function checkVer() {
+    // var ver = /^[0,9]{6}$/
+    var verification = $("#writeVerification").val().length
+    console.log($("#writeVerification").val())
+    if (verification === 6){
+      return true
+    } else {
+      document.getElementById("message_verification").style.display = "block"
+      document.getElementById("message_verification").style.color = "rgb(255, 0, 0)"
+      return false
+    }
+  }
+  // 密码验证
+  function checkPassword () {
+    var password = $("#password").val().length
+    if (password < 6) {
+      document.getElementById("message_password").style.display = "block"
+      document.getElementById("message_password").style.color = "rgb(255, 0, 0)"
+      document.getElementById("text_password").innerHTML = "密码大于六位数！"
+      return false
+    } else {
+      return true
+    }
+  }
+  function handleSubmit () {
+    this.messageClose()
+    if(this.checkUser()){
+      if(this.checkVer()){
+        if (this.checkPassword()) {
+          var ivt = $("#invite").val()
+          if (ivt == "") {
+            document.getElementById("message_invite").style.display = "block"
+            document.getElementById("message_invite").style.color = "rgb(255, 0, 0)"
+            return false
+          } else {
+            $.ajax({
+              type:"post",
+              url:"https://bb.wings60.cn/bb/user/register_user",
+              dataType:"json",
+              data:{
+                phone: $("#phone").val(),
+                smsCode: $("#writeVerification").val(),
+                password: hex_md5($("#password").val()),
+                invitationCode: $("#invite").val()
+              },
+              success:function(data){
+                console.log(data)
+                if (data.retCode === 1) {
+                  window.info('注册成功', 3000)
+                  setTimeout(t => {
+                    window.history.go(0)
+                  },3000)
+                } else if (data.retCode === 1513){
+                    window.info(data.retMsg , 3000)
+                  } else if (data.retCode === 2){
+                    window.info(data.retMsg , 3000)
+                  }  
+              }
+            })
+          } 
+        } 
+      }
+      
+    }
+  }
+  function getVerification (text) {
+    if(this.checkUser()){
+      $.ajax({
+        type:"post",
+        url:"https://bb.wings60.cn/bb/sms/send_reg_msg",
+        dataType:"json",
+        data:{
+          phone: $("#phone").val(),
+          terminal: '2'
+        },
+        success:function(data){
+          if (data.retCode === 1) {
+            console.log(this)
+            window.info('已发送', 3000)
+            document.getElementById("verification").style.textDecoration = "blink"
+            document.getElementById("verification").style.color = "rgb(255, 213, 210)"
+            if (time>=0 && time<60) {
+              return false
+            } else {
+              text.innerHTML= time + "s后重新发送"
+              var timer = null
+              timer = setInterval(function (){
+                if (time>0){
+                  time--
+                  text.innerHTML = time + "s后重新发送"
+                } else {
+                  text.innerHTML = "重新发送"
+                  document.getElementById("verification").style.color = "rgb(255, 0, 0)"
+                  document.getElementById("verification").style.textDecoration = "underline"
+                  clearInterval(timer);
+                  time = 60
+                }
+              },1000)
+            }
+          } else if (data.retCode === 1513){
+            window.info(data.retMsg, 3000)
+          } else if (data.retCode === 2){
+            window.info(data.retMsg, 3000)
+          }
+        }
+      })
+      
+    }
+    this.messageClose()
+  }
+  function messageClose () {
+    setTimeout(mesClose =>{
+      document.getElementById("message_phone").style.display = "none"
+      document.getElementById("message_verification").style.display = "none"
+      document.getElementById("message_password").style.display = "none"
+      document.getElementById("message_invite").style.display = "none"
+    },3000)
+  }
+  function goDown () {
+    var u = navigator.userAgent, app = navigator.appVersion;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+    var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isAndroid) {
+      window.location.href = "https://www.wandoujia.com/apps/com.wings.edu"
+    }
+    if (isIOS) {
+      window.location.href = "https://itunes.apple.com/cn/app/idXXXXXXXX?mt=8"
+    }
+  }
+  function info (msg, sec) {
+    let div = document.createElement('div')
+    div.setAttribute('class', 'message')
+    div.innerHTML = msg
+    document.body.appendChild(div)
+    setTimeout(function () {
+      div.remove()
+    }, sec || 2000)
+  }
+  function showKey () {
+    let input=document.getElementById("password");  
+    if (input.type=="password"){ 
+      input.type='text';
+    }else{
+      input.type='password';
+    } 
+  }
+</script>
